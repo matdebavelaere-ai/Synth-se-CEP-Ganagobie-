@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synthèse CEP — Scout</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+  :root {
+    --beige: #f5f0e8;
+    --cream: #faf7f2;
+    --brown: #3d2b1f;
+    --olive: #5c6b3a;
+    --red: #8b2e2e;
+    --gold: #b8882a;
+    --slate: #4a5568;
+    --light-olive: #e8eddb;
+    --light-red: #f5e8e8;
+    --light-gold: #fdf3dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--beige);
+    color: var(--brown);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--brown);
+    color: var(--cream);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '⚜';
+    position: absolute;
+    font-size: 20rem;
+    opacity: 0.04;
+    top: -3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  header .subtitle {
+    font-style: italic;
+    font-weight: 300;
+    color: #c9bfb0;
+    font-size: 1rem;
+  }
+  header .date {
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 2.5rem;
+    background: var(--cream);
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(60,40,20,0.08);
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-left: 5px solid var(--olive);
+  }
+  .section-header.red { border-left-color: var(--red); background: var(--light-red); }
+  .section-header.olive { border-left-color: var(--olive); background: var(--light-olive); }
+  .section-header.gold { border-left-color: var(--gold); background: var(--light-gold); }
+  .section-header.slate { border-left-color: var(--slate); background: #eef0f4; }
+
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    opacity: 0.25;
+    min-width: 2rem;
+    text-align: center;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .section-body {
+    padding: 1.2rem 1.5rem 1.5rem;
+  }
+
+  /* SUBSECTION */
+  .subsection {
+    margin-bottom: 1.2rem;
+  }
+  .subsection:last-child { margin-bottom: 0; }
+  .subsection-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olive);
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px dashed #c8d4b0;
+  }
+  .subsection-title.red { color: var(--red); border-bottom-color: #e0c0c0; }
+  .subsection-title.gold { color: var(--gold); border-bottom-color: #e8d4a8; }
+  .subsection-title.slate { color: var(--slate); border-bottom-color: #c8cfd8; }
+
+  /* CONTENT ELEMENTS */
+  ul { list-style: none; padding: 0; }
+  ul li {
+    padding: 0.15rem 0 0.15rem 1.2rem;
+    position: relative;
+  }
+  ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .timeline {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+  }
+  .timeline-year {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--red);
+    min-width: 5rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .timeline-text {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+  .tag {
+    background: var(--light-olive);
+    color: var(--olive);
+    border: 1px solid #b8c890;
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .tag.red { background: var(--light-red); color: var(--red); border-color: #d8a8a8; }
+  .tag.gold { background: var(--light-gold); color: var(--gold); border-color: #d8c090; }
+  .tag.slate { background: #eef0f4; color: var(--slate); border-color: #b8c0cc; }
+
+  .quote {
+    border-left: 3px solid var(--gold);
+    padding: 0.6rem 1rem;
+    margin: 0.8rem 0;
+    font-style: italic;
+    color: var(--slate);
+    background: var(--light-gold);
+    border-radius: 0 3px 3px 0;
+    font-size: 0.92rem;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    header h1 { font-size: 2rem; }
+  }
+
+  .info-box {
+    background: var(--light-gold);
+    border: 1px solid #d8c090;
+    border-radius: 3px;
+    padding: 0.8rem 1rem;
+    font-size: 0.88rem;
+  }
+
+  .highlight {
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  p { margin-bottom: 0.4rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.8rem;
+    color: #8a7060;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-top: 1px solid #ddd4c8;
+  }
+  footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Scouts Unitaires de France</div>
+  <h1>Synthèse du CEP</h1>
+  <div class="subtitle">Camp École Préparatoire — Notes de formation</div>
+  <div class="date">Mars 2026</div>
+</header>
+
+<div class="container">
+
+  <!-- SECTION 1 : HISTOIRE DE LA ROUTE -->
+  <div class="section">
+    <div class="section-header red">
+      <div class="section-num">A</div>
+      <div class="section-title">Histoire de la Route SUF</div>
+    </div>
+    <div class="section-body">
+
+      <div class="quote">« Le culte du passé n'a de sens que pour ceux qui ont la passion de l'avenir »</div>
+
+      <div class="subsection">
+        <div class="subsection-title">Origines du Scoutisme (1900–1932)</div>
+        <div class="timeline">
+          <div class="timeline-item"><span class="timeline-year">1900–1922</span><span class="timeline-text">B. Powell, officier de carrière, s'appuie sur des jeunes "éclaireurs" → donne l'idée du Scoutisme</span></div>
+          <div class="timeline-item"><span class="timeline-year">1907</span><span class="timeline-text">1er camp — Jeu, badges, patrouilles, âges et milieux différents</span></div>
+          <div class="timeline-item"><span class="timeline-year">1908</span><span class="timeline-text">1ère Loi Scoute. 5 buts : Dieu, Santé, Concret, Autres, Caractère</span></div>
+          <div class="timeline-item"><span class="timeline-year">1933</span><span class="timeline-text">2 millions de scouts dans le monde (aujourd'hui : 25 M)</span></div>
+          <div class="timeline-item"><span class="timeline-year">1922–1932</span><span class="timeline-text">Origines de la Route. 1er clan : Groupe Saint-Louis (Marcel Denis Forestier). Rôle des Jésuites & Dominicains. Réconciliation Cathos/FR par leur exemple pendant la guerre.</span></div>
+          <div class="timeline-item"><span class="timeline-year">1925</span><span class="timeline-text">Premiers Départs Routiers — « Cartel des Gauches »</span></div>
+          <div class="timeline-item"><span class="timeline-year">1932–1952</span><span class="timeline-text">Branche qui croit. "Homme de ces jeunes qui ont une foi pré-pubère". Charité à vivre — 3 piliers</span></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title red">Période de guerre & questionnements (1939–1971)</div>
+        <div class="timeline">
+          <div class="timeline-item"><span class="timeline-year">1939–1945</span><span class="timeline-text">INTERDIT mais toléré dans le Nord. Sous Vichy → continue de croître. Clan de Belfort décoré (Médaille de la Résistance). Des martyrs : 10 Routiers (Joël…)</span></div>
+          <div class="timeline-item"><span class="timeline-year">1952–1971</span><span class="timeline-text">Le temps des questionnements — "La Guerre des Michel". N. Menu (ENE) → renouvellement de l'esprit aventurier, missionnaire, non politisé. M. Rigal (ENR) → devient ambivalent : action sociale, aventure & intégration à la cité</span></div>
+          <div class="timeline-item"><span class="timeline-year">1956–1957</span><span class="timeline-text">Menu démissionnaire. Affaire J. Muller (1957). Contexte Guerre d'Algérie → Rigal fait déchirer les pages de la revue. Tensions au sein du mouvement.</span></div>
+          <div class="timeline-item"><span class="timeline-year">Fin ann. 60</span><span class="timeline-text">Route en difficulté. Péda évoluée. Démission EN</span></div>
+          <div class="timeline-item"><span class="timeline-year">1964</span><span class="timeline-text">Cristallisation des tensions (Pionniers 14–17, Rangers 12–14). Projet de substituer au jeu → on quitte la nature pour s'insérer davantage dans la Cité. Unitaires gardent l'unité 12–17 ans. Scouts Europe → 1963</span></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Naissance des SUF et croissance (1971–aujourd'hui)</div>
+        <div class="timeline">
+          <div class="timeline-item"><span class="timeline-year">1971</span><span class="timeline-text">Naissance des SUF (500 membres)</span></div>
+          <div class="timeline-item"><span class="timeline-year">1972</span><span class="timeline-text">Féminines — « Nous aussi » — « Et pourquoi pas ? » (titre de la revue, Jeannine Polier)</span></div>
+          <div class="timeline-item"><span class="timeline-year">1976</span><span class="timeline-text">DR (Direction Régionale)</span></div>
+          <div class="timeline-item"><span class="timeline-year">1980</span><span class="timeline-text">10 000 membres</span></div>
+          <div class="timeline-item"><span class="timeline-year">1985</span><span class="timeline-text">1er RNR et foulard Routier — Routier Bleu</span></div>
+          <div class="timeline-item"><span class="timeline-year">1993</span><span class="timeline-text">Compagnonnage Routier</span></div>
+          <div class="timeline-item"><span class="timeline-year">2011</span><span class="timeline-text">Bâton Routier — Symbole de Progression</span></div>
+          <div class="timeline-item"><span class="timeline-year">2022</span><span class="timeline-text">Chambord</span></div>
+          <div class="timeline-item"><span class="timeline-year">2025</span><span class="timeline-text">35 000 membres</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 2 : IDENTITÉ SUF -->
+  <div class="section">
+    <div class="section-header olive">
+      <div class="section-num">B</div>
+      <div class="section-title">Identité SUF</div>
+    </div>
+    <div class="section-body">
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="subsection-title">5 buts — fidélité à B. Powell</div>
+          <ul>
+            <li>La Santé</li>
+            <li>Le Caractère</li>
+            <li>Le Concret</li>
+            <li>Les Autres</li>
+            <li>Le Dieu</li>
+          </ul>
+          <div style="margin-top:0.6rem; font-style:italic; font-size:0.9rem;">Former des citoyens <strong>LIBRES, UTILES, HEUREUX</strong></div>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Spécificités SUF</div>
+          <ul>
+            <li>Non mixte : se développer hors du regard de l'autre sexe</li>
+            <li>Patrouille — notion de Grand Frère (CDA)</li>
+            <li>Groupe comme famille → cohabitation avec pédagogies différenciées</li>
+            <li>Légèreté des structures (EN…)</li>
+            <li>Assoc. Loi 1901 (avec TN) — tous les aînés peuvent voter</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:1rem">
+        <div class="subsection-title">Tranches d'âge — Pédagogie différenciée</div>
+        <div class="tag-row">
+          <span class="tag">8/12 — Émerveillement, ouverture aux autres par le jeu</span>
+          <span class="tag olive">12/17 — Dans le cadre du jeu, progresser en équipe, en repos</span>
+          <span class="tag red">17+ — Actions davantage tournées vers le monde (via les 3 piliers)</span>
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:1rem">
+        <div class="subsection-title">Structure organisationnelle</div>
+        <p>Commissaires Généraux ← Commissaires de branches ← DR<br>
+        Groupe ← EN, Galaxies<br>
+        Unité | Clan à 12 (pas 15) — <em>Jeunes par les jeunes</em></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 3 : LA ROUTE, BONNE NOUVELLE -->
+  <div class="section">
+    <div class="section-header red">
+      <div class="section-num">C</div>
+      <div class="section-title">La Route, une bonne nouvelle pour notre temps</div>
+    </div>
+    <div class="section-body">
+
+      <div class="quote">« La branche du couronnement » — branche rouge</div>
+
+      <div class="subsection">
+        <div class="subsection-title red">Contexte : les jeunes aujourd'hui</div>
+        <ul>
+          <li>1/2 jeunes : syndromes dépressifs</li>
+          <li>1/4 : pensées suicidaires</li>
+        </ul>
+        <p style="margin-top:0.5rem">Besoins : Autonomie (prise de recul) — Appartenance — Sécurité — Écoute — Confiance — Reconnaissance — Réalisation de soi (exercer sa liberté)</p>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Réponse du Scoutisme</div>
+        <p><strong>Liberté d'engagement</strong> — Méthode qui a fait ses preuves !</p>
+        <p>IFOP : plus engagé, plus heureux — <span class="highlight">33% de bien-être (TRÈS BIEN)</span></p>
+        <p style="margin-top:0.4rem"><strong>ADN missionnaire :</strong> « Nous sommes sauvés, c'est la bonne nouvelle à annoncer » — Instrument que plus grand que nous avec notre foulard</p>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Rites, Formes, Vie d'année</div>
+        <div class="two-col">
+          <div>
+            <p><strong>Bâton de Clan</strong> → Long à s'inventer → Route vers le BIEN</p>
+            <p><strong>Uniforme</strong> — Soldat → Pas clair dans la tête de l'ENR</p>
+            <p><em>Rites :</em> Entrée au clan, Promesse, CR, DR → Cérémonial</p>
+            <p style="margin-top:0.4rem">La grandeur de la Route : vivre simplement de beaux moments — Sobriété, Simplicité, Humilité, Efficacité</p>
+          </div>
+          <div>
+            <p><strong>Rassemblement en Cercle</strong> — CC Conseil du Clan (vie du clan, débat/échange & prise de décision)</p>
+            <p style="margin-top:0.4rem"><strong>Vie d'année :</strong> Calendrier semestre/semestre. Clan → communauté à créer</p>
+            <div class="tag-row" style="margin-top:0.4rem">
+              <span class="tag red">FRATERNITÉ</span>
+              <span class="tag olive">PROGRESSION</span>
+              <span class="tag gold">PRÉPARATION</span>
+            </div>
+            <p style="margin-top:0.5rem"><em>Thème Spi</em> choisi par le Clan → rattaché à l'Évangile<br>Aumônier membre du Clan, de la maîtrise</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 4 : LE CHEF DE CLAN -->
+  <div class="section">
+    <div class="section-header gold">
+      <div class="section-num">D</div>
+      <div class="section-title">Le Chef de Clan</div>
+    </div>
+    <div class="section-body">
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="subsection-title gold">3–4 aspects du chef de Clan</div>
+          <ul>
+            <li>Routier</li>
+            <li>Grand Frère / Frère</li>
+            <li>CU (Chef d'Unité)</li>
+          </ul>
+          <p style="margin-top:0.5rem">Engagement au même titre que les Routiers</p>
+          <p><strong>Grand Frère :</strong> Regard aimant — Confiance — Bienveillance. Témoin de la pédagogie à incarner → Unité de Vie. Vivre les valeurs SUF : Fraternité — Unité — Humilité — Audace</p>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title gold">Autorité & Responsabilité</div>
+          <p><strong>Connais-toi toi-même</strong> → connaître ses Routiers personnellement</p>
+          <p>Charge d'âme → parler progression, petit pas par petit pas</p>
+          <p>Autorité (du latin : <em>faire croître</em>) ≠ Dominat' qui abaisse</p>
+          <p style="margin-top:0.4rem">1. Lancer la dynamique<br>2. Déléguer (Principe de Subsidiarité)<br>Exigence vs Intransigeance — Commentaire négatif en privé</p>
+          <p style="margin-top:0.4rem"><strong>Responsabilité :</strong> Sécurité (anticiper les moments & lieux risqués) — ⚠ Dénonciation de crime pour mineur — du PÉNAL</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Qualités à travailler (représentant du Clan auprès des CG)</div>
+        <div class="tag-row">
+          <span class="tag gold">Confiance en soi & en les autres</span>
+          <span class="tag gold">Exigence envers soi & les autres</span>
+          <span class="tag gold">Amour</span>
+        </div>
+        <p style="margin-top:0.5rem">Penser aux Routiers → ACT / CT → futurs CC. Discussion CT pour potentiellement…</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 5 : MASCULINITÉ & DÉPART ROUTIER -->
+  <div class="section">
+    <div class="section-header slate">
+      <div class="section-num">E</div>
+      <div class="section-title">Masculinité & Départ Routier</div>
+    </div>
+    <div class="section-body">
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="subsection-title slate">Masculinité</div>
+          <p>Quelle place ? Quel caractère propre de l'Homme dans la société aujourd'hui ?</p>
+          <p>Virilité : Force, courage, abnégation<br><em>Masculinité ≠ Masculinisme</em></p>
+          <p style="margin-top:0.4rem"><strong>4 dimensions de l'Homme :</strong> 1-Fils, 2-Frère, 3-Époux, 4-Père → 4 façons de vivre l'altérité</p>
+          <ol style="padding-left:1.2rem; margin-top:0.4rem; font-size:0.9rem;">
+            <li>Condition qui rappelle humilité & gratitude — dimension d'écoute</li>
+            <li>Fraternité → réciprocité, proximité</li>
+            <li>Relation d'Alliance, don total, fidèle & fécond</li>
+            <li>Paternité → pas seulement biologique — dimension spirituelle</li>
+          </ol>
+          <p style="margin-top:0.5rem"><em>Péricorèse</em> → Don mutuel continu de la Trinité<br>Seule volonté de Dieu : que nous soyons tous sauvés !</p>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title slate">Départ Routier — Parole de Feu</div>
+          <p>Élan — Avancée vers la vocation d'Homme</p>
+          <p><em>Cérémonial concrétisant la progression</em></p>
+          <p style="margin-top:0.3rem">Routier s'élance / GA rassemble<br>Lumière qui éclaire & guide ↔ Lumière qui réchauffe<br>Travail d'appropriation de soi</p>
+          <p style="margin-top:0.3rem">Partir de demeurer : RS / GAPL<br>Ratifier ou exprimer : RS / GAPL</p>
+          <p style="margin-top:0.5rem"><em>Fr. Adrien Cantiard</em> — « Du Fanatisme »<br>Que fait-on du lavement des pieds aujourd'hui ?</p>
+          <p style="margin-top:0.5rem"><strong>Théorie du genre :</strong> touche à l'identité de l'homme et de la femme. Dissocie le sexe biologique → le genre (culturel, construit).<br>« Qui suis-je pour juger ? » — Pape François</p>
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:0.5rem">
+        <div class="subsection-title slate">Comment le Scoutisme aide ?</div>
+        <div class="tag-row">
+          <span class="tag slate">1. Apprendre à obéir — Parrainage</span>
+          <span class="tag slate">2. Frère Scout — Vie communautaire</span>
+          <span class="tag slate">3. Donner sans compter</span>
+          <span class="tag slate">4. Transmission — Faire grandir en s'effaçant</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 6 : SACREMENTS & AFFECTIVITÉ -->
+  <div class="section">
+    <div class="section-header olive">
+      <div class="section-num">F</div>
+      <div class="section-title">Sacrements, Affectivité & Unité de Vie</div>
+    </div>
+    <div class="section-body">
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="subsection-title">Les Sacrements</div>
+          <p><strong>Déf. :</strong> Signe visible de la grâce de Dieu, institué par l'Église — SIGNE et MOYEN</p>
+          <p>Significando causant → Signe qui cause la grâce</p>
+          <p style="margin-top:0.4rem"><em>Initiation Chrétienne :</em> Baptême, Confirmation, Eucharistie<br><em>Guérison :</em> Sacrement des malades, Pénitence<br><em>Au service de la communion :</em> Ordre, Mariage</p>
+          <p style="margin-top:0.4rem">Eucharistie, source et sommet de toute vie chrétienne<br>Baptême → Sacrement d'entrée dans l'Église<br>Confirmation → accomplit la grâce baptismale</p>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Affectivité — en route vers la maturité</div>
+          <p>Montrer ce qu'il y a de <strong>BEAU</strong> dans l'affectivité. Message de l'Église :</p>
+          <ol style="padding-left:1.2rem; margin-top:0.3rem; font-size:0.9rem;">
+            <li>La création de l'Homme et de la femme — sexualité créée & bonne</li>
+            <li>La sexualité trouve son sens dans l'amour — don de soi. <em>Caritas</em> → Amour ET Charité</li>
+            <li>L'amour en 3D : sentiment, sexualité (affectivité, corps, volonté), décision consciente de se donner</li>
+            <li>La chasteté → intégration réussie de la sexualité dans les 3D de la personne</li>
+            <li>Sincérité et vérité — pas permis/interdit, mais aspiration profonde</li>
+            <li>Ne pas oublier l'amitié</li>
+            <li>Rien n'est jamais perdu</li>
+            <li>Fécondité comme sens de l'amour</li>
+          </ol>
+          <p style="margin-top:0.4rem">Progression : DR – CR – Promesse → comprendre et s'engager le scoutisme<br><em>« De notre mieux, pour être toujours prêt à servir »</em></p>
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:0.5rem">
+        <div class="subsection-title">Unité de Vie</div>
+        <div class="quote">S. Augustin : « Aime et fais ce que tu veux »</div>
+        <div class="two-col">
+          <div>
+            <p>Question de l'ennui : Qu'est-ce qui me fait me lever le matin ?</p>
+            <p>EXT : Corps — cœur — esprit — âme (affectif, volonté, spi, sentiment, raison)</p>
+            <p>JPII : Foi et Raison — Base de la Foi</p>
+          </div>
+          <div>
+            <p>INT — Osce : Sanctuaire inviolable où Dieu parle à l'âme</p>
+            <p>Charge d'Âme : Exemplarité — Correction Fraternelle — Humilité</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 7 : LA ROUTE EN CAMP -->
+  <div class="section">
+    <div class="section-header red">
+      <div class="section-num">G</div>
+      <div class="section-title">La Route en Camp</div>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="subsection-title red">Fondamentaux</div>
+        <p>Aboutissement et sommet d'année — Aventure & Service (+ Prière pour l'équilibre global). Déconnexion pour vivre pleinement l'aventure du camp.</p>
+        <p style="margin-top:0.3rem"><strong>Moyens :</strong> Vie en communauté — Simplicité des moyens — Anticipation — Dépaysement (en pleine nature)</p>
+      </div>
+
+      <div class="two-col">
+        <div class="subsection">
+          <div class="subsection-title red">Service</div>
+          <p>Raison d'être de la Route d'Été. Choisir et discerner service à sa hauteur — SMART (Ambitieux, Spécifique, Réaliste, Mesurable)</p>
+          <ul>
+            <li>Répondre à un besoin existant (utile)</li>
+            <li>Service équilibré (HR, prière, discussions, chill…)</li>
+            <li>Service préparé & anticipé</li>
+            <li>Privilégier l'humain, les rencontres — Don de soi</li>
+          </ul>
+          <p style="margin-top:0.4rem"><em>Ex. : St Martin du Canigou (Pyrénées) — Sœurs Cisterciennes (chocolat)</em></p>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title red">Aventure & Marche</div>
+          <p>"La Route passe par les pieds" — Contemplation, Silence, Simplicité, Rencontre & Dépassement de Soi</p>
+          <p><strong>D+</strong> → 100m ≃ 1km plat. Ex : 30km avec 1000m D+ → ~30km plat. Considérer 4km/h</p>
+          <p>Cartes IGN personnalisées — Point d'eau, Ravitaillement</p>
+          <p>2L d'eau/pers recommandé</p>
+          <p>⚠ Dpt avec RISQUE INCENDIE → Appel des Mairies en amont</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title red">Prière en camp & Rythme journée type</div>
+        <div class="two-col">
+          <div>
+            <p><strong>Prière :</strong> HR, Chapelet, Veillée chants, Ben à Grâce — inviter l'Aumônier. Magnificat & Chahut (version compacte).</p>
+            <p style="margin-top:0.3rem">Rotation des services. Laisser de la place à la spontanéité. Carnet de camp avec programme.</p>
+          </div>
+          <div class="info-box">
+            <strong>Journée type :</strong><br>
+            7h Lever · 7h15 Prière · 7h30 Pdej · 8h Départ<br>
+            12h Dej · 14h Reprise marche<br>
+            ☀ [15–17] HR · 19h Dîner<br>
+            21h30 Complies · 22h Veillée/Coucher
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title red">Organisation & Réglementation (p.16)</div>
+        <div class="two-col">
+          <div>
+            <p><strong>Acteurs du DDC :</strong> CC (carnet de camp), Routiers (subsidiarité), Ref Péda, ENR, CG, Aumônier, Ref Admin</p>
+            <p><strong>Échéances :</strong> 31 mars → Relecture CG / Fin avril → Relecture Péda</p>
+          </div>
+          <div>
+            <p><strong>Réglementation :</strong> 7 mineurs et + → ACM. 800m altitude → Montagne</p>
+            <p>Imprimer FSL à jour en DOUBLE. Prévenir Gendarmerie & Mairie. N° URGENCE SUF : <strong>01 41 90 19 10</strong></p>
+            <p>Trace GPX — Prévoir délestage (flamme apparente…) pour beaucoup de départements</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Synthèse réalisée d'après les notes du CEP — <span>Scouts Unitaires de France</span> — 2026
+</footer>
+
+</body>
+</html>
